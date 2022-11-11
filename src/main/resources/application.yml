@@ -1,0 +1,80 @@
+server:
+  port: 8082
+
+#spring:
+#  application:
+#    name: framedynamic
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/test?allowMultiQueries=true&serverTimezone=Asia/Shanghai&autoReconnect=true&useUnicode=true&characterEncoding=utf8&useSSL=false
+#    username: root
+#    password: 123456
+#    driver-class-name: com.mysql.jdbc.Driver
+#    type: com.alibaba.druid.pool.DruidDataSource
+
+spring:
+  datasource:
+    dynamic:
+      primary: master #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+      datasource:
+        master:
+          url: jdbc:mysql://localhost:3306/test?allowMultiQueries=true&serverTimezone=Asia/Shanghai&autoReconnect=true&useUnicode=true&characterEncoding=utf8&useSSL=false
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.jdbc.Driver # 3.2.0开始支持SPI可省略此配置
+        slave_1:
+          url: jdbc:mysql://localhost:3306/test0?allowMultiQueries=true&serverTimezone=Asia/Shanghai&autoReconnect=true&useUnicode=true&characterEncoding=utf8&useSSL=false
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.jdbc.Driver
+        slave_2:
+          url: jdbc:mysql://localhost:3306/test1?allowMultiQueries=true&serverTimezone=Asia/Shanghai&autoReconnect=true&useUnicode=true&characterEncoding=utf8&useSSL=false
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.jdbc.Driver
+        slave_3:
+          url: jdbc:oracle:thin:@localhost:1521/orcl
+          username: demo
+          password: demo
+          driver-class-name: oracle.jdbc.OracleDriver
+    druid:
+      ## 初始化大小，最小，最大
+      initial-size: 5
+      min-idle: 5
+      max-active: 200
+      ## 从连接池获取连接等待超时的时间，单位：ms
+      max-wait: 10000
+      ## 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      time-between-eviction-runs-millis: 600000
+      ## 配置一个连接在池中最小生存的时间，单位是毫秒
+      min-evictable-idle-time-millis: 300000
+      ## 申请连接时执行validationQuery检测连接是否有效
+      test-on-borrow: false
+      ## 归还连接时执行validationQuery检测连接是否有效
+      test-on-return: false
+      ## 申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效
+      test-while-idle: true
+      ## 用于检查连接有效性SQL
+      validation-query: SELECT 1
+      ## 连接池中的minIdle数量以内的连接，空闲时间超过minEvictableIdleTimeMillis，则会执行keepAlive操作。
+      keep-alive: true
+      ## 连接泄露检查，打开removeAbandoned功能 , 连接从连接池借出后，长时间不归还，将触发强制回连接。回收周期随timeBetweenEvictionRunsMillis进行，如果连接为从连接池借出状态，并且未执行任何sql，并且从借出时间起已超过removeAbandonedTimeout时间，则强制归还连接到连接池中。
+      remove-abandoned: false
+      ## 超时时间，单位：s
+      remove-abandoned-timeout: 80
+      ## 关闭abandoned连接时输出错误日志，这样出现连接泄露时可以通过错误日志定位忘记关闭连接的位置
+      log-abandoned: true
+      ## 是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
+      pool-prepared-statements: true
+      ## 要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。
+      max-pool-prepared-statement-per-connection-size: 100
+      ## 配置监控统计日志的输出间隔，单位毫秒，每次输出所有统计数据会重置，酌情开启
+      time-between-log-stats-millis: 120000
+      #内置过滤器
+      filters: stat,log4j2
+      filter:
+        stat:
+          enabled: true
+          db-type: mysql
+          log-slow-sql: true
+          slow-sql-millis: 1000 #超过1s打印sql
