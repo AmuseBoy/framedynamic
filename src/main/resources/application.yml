@@ -1,6 +1,22 @@
 server:
   port: 8082
 
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    enabled-by-default: true
+
+info:
+  appName: actuator-test-demo
+  encoding: UTF-8
+  javaSource: 1.8
+  javaTarget: 1.8
+
 #spring:
 #  application:
 #    name: framedynamic
@@ -12,6 +28,14 @@ server:
 #    type: com.alibaba.druid.pool.DruidDataSource
 
 spring:
+  application:
+    name: framedynamic
+  boot:
+    admin:
+      client:
+        url: http://127.0.0.1:8081
+        username: admin
+        password: admin
   datasource:
     dynamic:
       primary: master #设置默认的数据源或者数据源组,默认值即为master
